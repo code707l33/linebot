@@ -39,7 +39,7 @@ def linebot():
             reply = '你傳的不是文字呦～'
         print(reply)
         line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
-    except InvalidSignatureError as e:
+    except Exception as e:
         print(f'Error: {e}\n', body)                                          # 如果發生錯誤，印出收到的內容
     return 'OK'                                              # 驗證 Webhook 使用，不能省略
 
