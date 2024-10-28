@@ -71,4 +71,4 @@ def get_weather_city(city_name=''):
 
 
 if __name__ == '__main__':
-    print(get_weather_city('台北'))
+    print(get_weather_city('台北天氣'))

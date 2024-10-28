@@ -39,6 +39,7 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
 
             if '天氣' in msg:
+                msg = msg.replace('天氣', '')
                 reply = weatherAPI.get_weather_city(msg)     # 呼叫 get_weather_city 函式
             else:
                 print(msg)                                       # 印出內容
