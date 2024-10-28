@@ -8,6 +8,9 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
+# 引入 Weather API 天氣查詢
+import weatherAPI
+
 app = Flask(__name__)
 
 
@@ -30,11 +33,16 @@ def linebot():
 
         handler.handle(body, signature)                      # 綁定訊息回傳的相關資訊
         tk = json_data['events'][0]['replyToken']            # 取得回傳訊息的 Token
+
         type = json_data['events'][0]['message']['type']     # 取得 LINe 收到的訊息類型
         if type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
-            print(msg)                                       # 印出內容
-            reply = msg
+
+            if '天氣' in msg:
+                reply = weatherAPI.get_weather_city(msg)     # 呼叫 get_weather_city 函式
+            else:
+                print(msg)                                       # 印出內容
+                reply = msg
         else:
             reply = '你傳的不是文字呦～'
         print(reply)
