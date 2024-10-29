@@ -4,8 +4,18 @@ import requests
 import json
 from datetime import datetime
 import time
+import random
 
 apikey = 'CWA-65283F2A-5A45-4772-8C57-9650A2A40C9E'
+
+
+def generate_light_hex_color():
+    # 每個顏色通道（R, G, B）設定在 128 到 255 的範圍內，確保顏色偏淺
+    r = random.randint(128, 255)
+    g = random.randint(128, 255)
+    b = random.randint(128, 255)
+    # 將 RGB 值轉換成 16 進制格式
+    return f"#{r:02x}{g:02x}{b:02x}"
 
 
 def city_name_format(city_name):
@@ -145,7 +155,7 @@ def get_weather_dict(city_name, dist_name):
 
         # 格式化 datetime 為指定格式
         st = dt.strftime("%m月%d日 %I %p")
-        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dist_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
+        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dist_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": generate_light_hex_color(), "paddingTop": "19px",
                                "paddingAll": "12px", "paddingBottom": "16px"}, "body": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": Wx_value, "size": "18px"}, {"type": "text", "text": f"降雨機率{Pop_value}%", "size": "15px"}, {"type": "box", "layout": "vertical", "contents": [], "backgroundColor": "#0D8186", "width": f"{Pop_value}%", "height": "6px"}], "spacing": "md", "paddingAll": "12px"}, "styles": {"footer": {"separator": False}}})
 
     return (dic)
