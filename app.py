@@ -41,7 +41,7 @@ def linebot():
             if '天氣' in msg:
                 msg = msg.replace('天氣', '')
                 msg = msg.replace(' ', '')
-                reply = weatherAPI.get_weather_city(msg)     # 呼叫 get_weather_city 函式
+                reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
             else:
                 print(msg)                                       # 印出內容
                 reply = msg.replace('\t', '    ')
