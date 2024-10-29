@@ -47,9 +47,8 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
 
             if '天氣' in msg:
-                # reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
-                reply_json = FlexSendMessage(alt_text='天氣', contents={"type": "carousel", "contents": [{"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": "台北,內湖", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": "10月29日6A.M.", "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2",
-                                             "paddingTop": "19px", "paddingAll": "12px", "paddingBottom": "16px"}, "body": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": "陰天", "size": "18px"}, {"type": "text", "text": "降雨機率80%", "size": "15px"}, {"type": "box", "layout": "vertical", "contents": [], "backgroundColor": "#0D8186", "width": "80%", "height": "6px"}], "spacing": "md", "paddingAll": "12px"}, "styles": {"footer": {"separator": False}}}]})
+                reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
+                reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
                 # line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
                 line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
             else:

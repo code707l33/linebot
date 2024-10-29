@@ -94,16 +94,24 @@ def get_weather_city(city_name):
     Wx = weatherElement[0]['time']
     Pop = weatherElement[1]['time']
 
-    msg = ''
+    # msg = ''
     for z in zip(Wx, Pop):
         st = z[0]['startTime']
-        et = z[0]['endTime']
+        # et = z[0]['endTime']
         Wx_value = z[0]['parameter']['parameterName']
         Pop_value = z[1]['parameter']['parameterName']
 
-        msg += f'{city_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
+        # msg += f'{city_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
 
-    return (msg)
+        # 解析原始字串為 datetime 對象
+        dt = datetime.strptime(st, "%Y-%m-%d %H:%M:%S")
+
+        # 格式化 datetime 為指定格式
+        st = dt.strftime("%m月%d日 %I %p")
+        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dict_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
+                               "paddingAll": "12px", "paddingBottom": "16px"}, "body": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": Wx_value, "size": "18px"}, {"type": "text", "text": f"降雨機率{Pop_value}%", "size": "15px"}, {"type": "box", "layout": "vertical", "contents": [], "backgroundColor": "#0D8186", "width": f"{Pop_value}%", "height": "6px"}], "spacing": "md", "paddingAll": "12px"}, "styles": {"footer": {"separator": False}}})
+
+    return (dic)
 
 
 def get_weather_dict(city_name, dict_name):
@@ -123,15 +131,27 @@ def get_weather_dict(city_name, dict_name):
     Pop = weatherElements[0]['time'][:4]
     Wx = weatherElements[6]['time'][:4]
 
-    msg = ''
+    # msg = ''
+    dic = {
+        "type": "carousel",
+        "contents": []
+    }
     for z in zip(Wx, Pop):
         st = z[0]['startTime']
-        et = z[0]['endTime']
+        # et = z[0]['endTime']
         Wx_value = z[0]['elementValue'][0]['value']
         Pop_value = z[1]['elementValue'][0]['value']
-        msg += f'{city_name}{dict_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
+        # msg += f'{city_name}{dict_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
 
-    return (msg)
+        # 解析原始字串為 datetime 對象
+        dt = datetime.strptime(st, "%Y-%m-%d %H:%M:%S")
+
+        # 格式化 datetime 為指定格式
+        st = dt.strftime("%m月%d日 %I %p")
+        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dict_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
+                               "paddingAll": "12px", "paddingBottom": "16px"}, "body": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": Wx_value, "size": "18px"}, {"type": "text", "text": f"降雨機率{Pop_value}%", "size": "15px"}, {"type": "box", "layout": "vertical", "contents": [], "backgroundColor": "#0D8186", "width": f"{Pop_value}%", "height": "6px"}], "spacing": "md", "paddingAll": "12px"}, "styles": {"footer": {"separator": False}}})
+
+    return (dic)
 
 
 def get_weather(place):
