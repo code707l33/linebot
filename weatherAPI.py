@@ -152,11 +152,26 @@ def get_weather_city_new(city_name):
     if r.status_code == 200:
         data = r.json()
 
-    locations = data['records']['location']
+    weatherElement = data['records']['location'][0]['weatherElement']
 
-    output_dict = {}
-    for location in locations:
-        print(location.keys())
+    # print(weatherElement[0])
+
+    Wx = weatherElement[0]['time']
+    Pop = weatherElement[1]['time']
+
+    msg = ''
+    for z in zip(Wx, Pop):
+        st = z[0]['startTime']
+        et = z[0]['endTime']
+        value = z[0]['parameter']['parameterName']
+        msg += f'{city_name}於 {st} ~ {et}\t天氣 : {value}\t'
+
+        st = z[1]['startTime']
+        et = z[1]['endTime']
+        value = z[1]['parameter']['parameterName']
+        msg += f'降雨機率 : {value}%\n'
+
+    return (msg)
 
 
 def get_weather_dict(city_name, dict_name):
@@ -197,11 +212,5 @@ def get_weather(place):
 if __name__ == '__main__':
     # print(get_weather_city('台北'))
     # print(get_weather_dict('新北市', '瑞芳區'))
-    place = '北投'
-
-    dist = format_location(place)
-    print(dist)
-    if len(dist) == 1:
-        print(get_weather_city_new(dist[0]))
-    else:
-        print(get_weather_dict(dist[0], dist[1]))
+    place = '台北'
+    print(get_weather(place))
