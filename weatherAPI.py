@@ -10,15 +10,20 @@ apikey = 'CWA-65283F2A-5A45-4772-8C57-9650A2A40C9E'
 
 
 def generate_color():
-
-    # 選擇兩個通道接近最大值（高亮度），第三個通道在較低的範圍以增加對比
+    # 隨機生成兩個高亮度通道
     high_values = [random.randint(200, 255) for _ in range(2)]
+    # 隨機生成一個較低亮度通道，來增加彩度
     low_value = random.randint(100, 150)
 
-    # 隨機排列 RGB 通道，確保有兩個通道高亮、一個通道偏低
+    # 將兩個高亮值和一個低亮值合併成 RGB 列表
     rgb = high_values + [low_value]
-    random.shuffle(rgb)  # 隨機打亂通道順序
+    # 隨機打亂 RGB 列表的順序，以隨機排列 R, G, B 的值
+    random.shuffle(rgb)
 
+    # 解構列表，分別賦值給 r, g, b
+    r, g, b = rgb
+
+    # 將 r, g, b 格式化為 16 進制字串，並回傳
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
