@@ -77,72 +77,7 @@ def get_dataid(city_name):
     return apidict[city_name_format(city_name)]
 
 
-def get_weather_city(city_name=''):
-    city_name = city_name_format(city_name)
-
-    # furl = f'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization={apikey}&locationName=%E8%8A%B1%E8%93%AE%E7%B8%A3&format=JSON'
-    furl = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWA-65283F2A-5A45-4772-8C57-9650A2A40C9E&format=JSON'
-
-    r = requests.get(furl)
-
-    if r.status_code == 200:
-        data = r.json()
-
-    locations = data['records']['location']
-
-    output_dict = {}
-
-    # Wx(天氣現象)、MaxT(最高溫度)、MinT(最低溫度)、CI(舒適度)、PoP(降雨機率)
-    for location in locations:
-        city = location['locationName']  # location
-        for weather in location['weatherElement']:
-            if weather['elementName'] == 'Wx':
-                # 天氣日
-                weather_element_day = weather['time'][0]['parameter']['parameterName']
-                # 天氣夜
-                weather_element_night = weather['time'][1]['parameter']['parameterName']
-            elif weather['elementName'] == 'MaxT':
-                # 最高溫度日
-                max_t_day = weather['time'][0]['parameter']['parameterName']
-                # 最高溫度夜
-                max_t_night = weather['time'][1]['parameter']['parameterName']
-            elif weather['elementName'] == 'MinT':
-                # 最低溫度日
-                min_t_day = weather['time'][0]['parameter']['parameterName']
-                # 最低溫度夜
-                min_t_night = weather['time'][1]['parameter']['parameterName']
-            elif weather['elementName'] == 'CI':
-                # 舒適度日
-                ci_day = weather['time'][0]['parameter']['parameterName']
-                # 舒適度夜
-                ci_night = weather['time'][1]['parameter']['parameterName']
-            elif weather['elementName'] == 'PoP':
-                # 降雨機率日
-                po_p_day = weather['time'][0]['parameter']['parameterName']
-                # 降雨機率夜
-                po_p_night = weather['time'][1]['parameter']['parameterName']
-        # print(f'今日 {city} 天氣:\n日間\t{weather_element_day}\n\t最高溫度:{max_t_day}\t最低溫度:{min_t_day}\n\t舒適度:{ci_day}\n\t降雨機率:{po_p_day}%\n夜間\t{weather_element_night}\n\t最高溫度:{max_t_night}\t最低溫度:{min_t_night}\n\t舒適度:{ci_night}\n\t降雨機率:{po_p_night}%')
-        msg = (f'今日 {city} 天氣:\n日間\t{weather_element_day}\n\t最高溫度:{max_t_day}\t最低溫度:{min_t_day}\n\t舒適度:{ci_day}\n\t降雨機率:{po_p_day}%\n夜間\t{weather_element_night}\n\t最高溫度:{max_t_night}\t最低溫度:{min_t_night}\n\t舒適度:{ci_night}\n\t降雨機率:{po_p_night}%')
-        output_dict[city] = msg
-
-    print(output_dict)
-
-    for city in output_dict.keys():
-        if city_name in city:
-            city_name = city
-            break
-
-    try:
-        if city_name == '':
-            return output_dict
-        else:
-            return output_dict[city_name]
-    except Exception as e:
-        err_msg = {'error': '查無此地區'}
-        return err_msg
-
-
-def get_weather_city_new(city_name):
+def get_weather_city(city_name):
 
     # furl = f'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization={apikey}&locationName=%E8%8A%B1%E8%93%AE%E7%B8%A3&format=JSON'
     furl = f'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWA-65283F2A-5A45-4772-8C57-9650A2A40C9E&format=JSON&locationName={city_name}'
@@ -163,13 +98,10 @@ def get_weather_city_new(city_name):
     for z in zip(Wx, Pop):
         st = z[0]['startTime']
         et = z[0]['endTime']
-        value = z[0]['parameter']['parameterName']
-        msg += f'{city_name}於 {st}\t天氣 : {value}\t'
+        Wx_value = z[0]['parameter']['parameterName']
+        Pop_value = z[1]['parameter']['parameterName']
 
-        st = z[1]['startTime']
-        et = z[1]['endTime']
-        value = z[1]['parameter']['parameterName']
-        msg += f'降雨機率 : {value}%\n'
+        msg += f'{city_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
 
     return (msg)
 
@@ -186,6 +118,7 @@ def get_weather_dict(city_name, dict_name):
     else:
         return ('Error')
 
+    # 取得天氣資訊、降雨機率
     weatherElements = data['records']['locations'][0]['location'][0]['weatherElement']
     Pop = weatherElements[0]['time'][:4]
     Wx = weatherElements[6]['time'][:4]
@@ -194,23 +127,22 @@ def get_weather_dict(city_name, dict_name):
     for z in zip(Wx, Pop):
         st = z[0]['startTime']
         et = z[0]['endTime']
-        value = z[0]['elementValue'][0]['value']
-        msg += f'{city_name}{dict_name}於 {st}\t天氣 : {value}\t'
-
-        st = z[1]['startTime']
-        et = z[1]['endTime']
-        value = z[1]['elementValue'][0]['value']
-        msg += f'降雨機率 : {value}%\n'
+        Wx_value = z[0]['elementValue'][0]['value']
+        Pop_value = z[1]['elementValue'][0]['value']
+        msg += f'{city_name}{dict_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
 
     return (msg)
 
 
 def get_weather(place):
 
+    place = place.replace('天氣', '')
+    place = place.replace(' ', '')
+
     dist = format_location(place)
     # print(dist)
     if len(dist) == 1:
-        return (get_weather_city_new(dist[0]))
+        return (get_weather_city(dist[0]))
     else:
         return (get_weather_dict(dist[0], dist[1]))
 
@@ -218,5 +150,5 @@ def get_weather(place):
 if __name__ == '__main__':
     # print(get_weather_city('台北'))
     # print(get_weather_dict('新北市', '瑞芳區'))
-    place = '內湖'
+    place = '台北'
     print(get_weather(place))
