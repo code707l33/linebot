@@ -164,7 +164,7 @@ def get_weather_city_new(city_name):
         st = z[0]['startTime']
         et = z[0]['endTime']
         value = z[0]['parameter']['parameterName']
-        msg += f'{city_name}於 {st} ~ {et}\t天氣 : {value}\t'
+        msg += f'{city_name}於 {st}\t天氣 : {value}\t'
 
         st = z[1]['startTime']
         et = z[1]['endTime']
@@ -187,14 +187,20 @@ def get_weather_dict(city_name, dict_name):
         return ('Error')
 
     weatherElements = data['records']['locations'][0]['location'][0]['weatherElement']
-    Pop = weatherElements[0]['time']
+    Pop = weatherElements[0]['time'][:4]
+    Wx = weatherElements[6]['time'][:4]
 
     msg = ''
-    for s in Pop[:6]:
-        st = s['startTime']
-        et = s['endTime']
-        value = s['elementValue'][0]['value']
-        msg += f'{dict_name}於 {st} ~ {et}\t降雨機率 : {value}%\n'
+    for z in zip(Wx, Pop):
+        st = z[0]['startTime']
+        et = z[0]['endTime']
+        value = z[0]['elementValue'][0]['value']
+        msg += f'{city_name}{dict_name}於 {st}\t天氣 : {value}\t'
+
+        st = z[1]['startTime']
+        et = z[1]['endTime']
+        value = z[1]['elementValue'][0]['value']
+        msg += f'降雨機率 : {value}%\n'
 
     return (msg)
 
@@ -212,5 +218,5 @@ def get_weather(place):
 if __name__ == '__main__':
     # print(get_weather_city('台北'))
     # print(get_weather_dict('新北市', '瑞芳區'))
-    place = '台北'
+    place = '內湖'
     print(get_weather(place))
