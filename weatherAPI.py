@@ -11,7 +11,7 @@ apikey = 'CWA-65283F2A-5A45-4772-8C57-9650A2A40C9E'
 
 def generate_color():
     # 隨機生成兩個高亮度通道
-    high_values = [random.randint(200, 255) for _ in range(2)]
+    high_values = [random.randint(180, 210) for _ in range(2)]
     # 隨機生成一個較低亮度通道，來增加彩度
     low_value = random.randint(100, 150)
 
