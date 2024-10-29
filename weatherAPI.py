@@ -29,6 +29,11 @@ def generate_color():
     # 解構列表，分別賦值給 r, g, b
     r, g, b = rgb_list[random.randint(0, 9)]
 
+    # 如果顏色接近黃色 (紅綠值高且藍值低)，進一步提高紅綠值
+    if r > 200 and g > 200 and b < 100:
+        r = min(255, r + 30)  # 將紅色值增加到不超過 255
+        g = min(255, g + 30)  # 將綠色值增加到不超過 255
+
     # 將 r, g, b 格式化為 16 進制字串，並回傳
     return f"#{r:02x}{g:02x}{b:02x}"
 
