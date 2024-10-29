@@ -94,14 +94,14 @@ def get_weather_city(city_name):
     Wx = weatherElement[0]['time']
     Pop = weatherElement[1]['time']
 
-    # msg = ''
+    dic = {
+        "type": "carousel",
+        "contents": []
+    }
     for z in zip(Wx, Pop):
         st = z[0]['startTime']
-        # et = z[0]['endTime']
         Wx_value = z[0]['parameter']['parameterName']
         Pop_value = z[1]['parameter']['parameterName']
-
-        # msg += f'{city_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
 
         # 解析原始字串為 datetime 對象
         dt = datetime.strptime(st, "%Y-%m-%d %H:%M:%S")
@@ -131,17 +131,14 @@ def get_weather_dict(city_name, dict_name):
     Pop = weatherElements[0]['time'][:4]
     Wx = weatherElements[6]['time'][:4]
 
-    # msg = ''
     dic = {
         "type": "carousel",
         "contents": []
     }
     for z in zip(Wx, Pop):
         st = z[0]['startTime']
-        # et = z[0]['endTime']
         Wx_value = z[0]['elementValue'][0]['value']
         Pop_value = z[1]['elementValue'][0]['value']
-        # msg += f'{city_name}{dict_name}於 {st}\t天氣 : {Wx_value}\t降雨機率 : {Pop_value}%\n'
 
         # 解析原始字串為 datetime 對象
         dt = datetime.strptime(st, "%Y-%m-%d %H:%M:%S")
