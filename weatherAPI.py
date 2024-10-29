@@ -108,16 +108,16 @@ def get_weather_city(city_name):
 
         # 格式化 datetime 為指定格式
         st = dt.strftime("%m月%d日 %I %p")
-        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dict_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
+        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
                                "paddingAll": "12px", "paddingBottom": "16px"}, "body": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": Wx_value, "size": "18px"}, {"type": "text", "text": f"降雨機率{Pop_value}%", "size": "15px"}, {"type": "box", "layout": "vertical", "contents": [], "backgroundColor": "#0D8186", "width": f"{Pop_value}%", "height": "6px"}], "spacing": "md", "paddingAll": "12px"}, "styles": {"footer": {"separator": False}}})
 
     return (dic)
 
 
-def get_weather_dict(city_name, dict_name):
+def get_weather_dict(city_name, dist_name):
 
     dataid = get_dataid(city_name)
-    url = f'https://opendata.cwa.gov.tw/api/{dataid}?Authorization={apikey}&format=JSON&locationName={dict_name}'
+    url = f'https://opendata.cwa.gov.tw/api/{dataid}?Authorization={apikey}&format=JSON&locationName={dist_name}'
     print(url)
     r = requests.get(url)
 
@@ -145,7 +145,7 @@ def get_weather_dict(city_name, dict_name):
 
         # 格式化 datetime 為指定格式
         st = dt.strftime("%m月%d日 %I %p")
-        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dict_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
+        dic['contents'].append({"type": "bubble", "size": "micro", "header": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": f"{city_name[:-1]},{dist_name[:-1]}", "color": "#ffffff", "align": "start", "size": "20px", "gravity": "center"}, {"type": "text", "text": st, "color": "#ffffff", "align": "start", "size": "xs", "gravity": "center", "margin": "lg"}], "backgroundColor": "#27ACB2", "paddingTop": "19px",
                                "paddingAll": "12px", "paddingBottom": "16px"}, "body": {"type": "box", "layout": "vertical", "contents": [{"type": "text", "text": Wx_value, "size": "18px"}, {"type": "text", "text": f"降雨機率{Pop_value}%", "size": "15px"}, {"type": "box", "layout": "vertical", "contents": [], "backgroundColor": "#0D8186", "width": f"{Pop_value}%", "height": "6px"}], "spacing": "md", "paddingAll": "12px"}, "styles": {"footer": {"separator": False}}})
 
     return (dic)
