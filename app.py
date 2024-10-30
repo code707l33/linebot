@@ -51,21 +51,25 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
             user_history(userId, 'user', msg)
 
-            if msg[:2] == '!天氣':
-                msg = msg[2:]
-                reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
+            if msg[0] == '!' or msg[0] == '！':                # 判斷是否為指令
+                msg = msg[1:]
 
-                if reply is not None:
-                    reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
-                    line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
-                    reply = '!天氣資訊'
-                    user_history(userId, 'assistant', reply)
-                    return 'OK'
-                else:
-                    reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
+                if '天氣' in msg:                             # 判斷是否為天氣指令
+                    reply = weatherAPI.get_weather(msg)       # 呼叫 get_weather_city 函式
 
-            elif msg == '!gpt' or msg == '!GPT':
-                reply = 'GPT 功能尚未開放，請使用其他功能。'
+                    if reply is not None:
+                        reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
+                        line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
+                        reply = '!天氣資訊'
+                        user_history(userId, 'assistant', reply)
+                        return 'OK'
+                    else:
+                        reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
+                elif 'gpt' in msg or 'GPT' in msg:             # 判斷是否為 GPT 指令
+                    reply = 'GPT 模型正在開發中。'
+                else:                                          # 無效指令
+                    reply = '!指令錯誤'
+
             else:
                 reply = msg
         else:
