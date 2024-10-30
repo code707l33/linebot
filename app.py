@@ -56,7 +56,7 @@ def linebot():
 
                 if reply is not None:
                     reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
-                    user_history(userId, 'assistant', '天氣資訊')
+                    reply = '天氣資訊'
                     line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
                 else:
                     reply = '無法查詢\n請重新輸入 "天氣" + "地區"'
