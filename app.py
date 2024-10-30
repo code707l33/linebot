@@ -3,22 +3,21 @@ from flask import Flask, request, send_from_directory
 # 載入 json 標準函式庫，處理回傳的資料格式
 import json
 
-# 引入 os 模組
+# 引入 os traceback 模組
 import os
+import traceback
+
+# 引入 dotenv
+from dotenv import load_dotenv, dotenv_values
 
 # 載入 LINE Message API 相關函式庫
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
 
-# 引入 Weather API 天氣查詢
+# 引入 Weather API 天氣查詢, GPT API 資料處理
 import weatherAPI
-
-# 引入 traceback
-import traceback
-
-# 引入 dotenv
-from dotenv import load_dotenv, dotenv_values
+import linebot_GPT
 
 
 app = Flask(__name__)
@@ -65,8 +64,13 @@ def linebot():
                         return 'OK'
                     else:
                         reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
-                elif 'gpt' in msg or 'GPT' in msg:             # 判斷是否為 GPT 指令
-                    reply = 'GPT 模型正在開發中。'
+                elif msg[:2] == 'GPT' or msg[:2] == 'gpt':      # 判斷是否為 GPT 指令
+                    msg = msg[2:]
+                    reply = linebot_GPT.get_GPT(msg)
+                    user_history(userId, 'user', msg, 'GPT')
+                    user_history(userId, 'assistant', reply, 'GPT')
+                    return 'OK'
+
                 else:                                          # 無效指令
                     reply = '!指令錯誤'
 
@@ -123,8 +127,8 @@ def serve_image(filename):
     return send_from_directory('static/images', filename)
 
 
-def user_history(user_id, role, content, text_type=''):
-    log_msg = {'role': role, 'content': content, 'text_type': text_type}
+def user_history(user_id, role, content, content_type=''):
+    log_msg = {'role': role, 'content': content, 'content_type': content_type}
     file_path = os.path.join('history_msg', f'{user_id}.json')
 
     try:
