@@ -17,11 +17,8 @@ import traceback
 # 引入 dotenv
 from dotenv import load_dotenv, dotenv_values
 
+
 app = Flask(__name__)
-
-
-with open('secret.json') as fp:
-    secret_data = json.load(fp)
 
 access_token = dotenv_values('.env')["linebot_access_token"]
 secret = dotenv_values('.env')["linebot_secret"]
