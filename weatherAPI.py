@@ -13,7 +13,7 @@ def generate_color():
 
     rgb_list = []
 
-    for i in range(10):
+    for i in range(20):
         # 隨機生成兩個高亮度通道
         high_values = [random.randint(180, 210) for _ in range(2)]
         # 隨機生成一個較低亮度通道，來增加彩度
@@ -27,7 +27,7 @@ def generate_color():
         rgb_list.append(rgb)
 
     # 解構列表，分別賦值給 r, g, b
-    r, g, b = rgb_list[random.randint(0, 9)]
+    r, g, b = rgb_list[random.randint(0, 19)]
 
     # 如果顏色接近黃色，進一步降低藍色值來增加飽和度
     if r > 200 and g > 200 and b < 100:
@@ -96,7 +96,7 @@ def format_location(input_location):
                 if normalized_input == city.replace(rep[:1], "") + district.replace(rep[1:], ""):
                     return [city, district]
 
-    return "無法識別的地區名稱"
+    return None
 
 
 def get_dataid(city_name):
@@ -187,10 +187,13 @@ def get_weather(place):
 
     dist = format_location(place)
     # print(dist)
-    if len(dist) == 1:
-        return (get_weather_city(dist[0]))
+    if dist is not None:
+        if len(dist) == 1:
+            return (get_weather_city(dist[0]))
+        else:
+            return (get_weather_dict(dist[0], dist[1]))
     else:
-        return (get_weather_dict(dist[0], dist[1]))
+        return (None)
 
 
 if __name__ == '__main__':

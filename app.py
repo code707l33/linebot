@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 
 # 載入 json 標準函式庫，處理回傳的資料格式
 import json
@@ -48,9 +48,13 @@ def linebot():
 
             if '天氣' in msg:
                 reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
-                reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
-                # line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
-                line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
+
+                if reply is None:
+                    line_bot_api.reply_message(tk, TextSendMessage('無法查詢\n請重新輸入 "天氣" + "地區"'))
+                else:
+                    reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
+                    # line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
+                    line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
             else:
                 line_bot_api.reply_message(tk, TextSendMessage(msg))  # 回傳訊息
         else:
@@ -64,6 +68,12 @@ def linebot():
     return 'OK'                                              # 驗證 Webhook 使用，不能省略
 
 
+@app.route('/img/<filename>')
+def serve_image(filename):
+    # 指定圖片的文件夾路徑，並返回圖片文件
+    return send_from_directory('static/images', filename)
+
+
 if __name__ == "__main__":
 
-    app.run()
+    app.run(debug=True)
