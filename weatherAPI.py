@@ -52,6 +52,8 @@ def city_name_format(city_name):
 
 def format_location(input_location):
 
+    if input_location == '':
+        return None
     locations = {
         '新北市': ['板橋區', '三重區', '中和區', '永和區', '新莊區', '新店區', '樹林區', '鶯歌區', '三峽區', '淡水區', '汐止區', '瑞芳區', '土城區', '蘆洲區', '五股區', '泰山區', '林口區', '深坑區', '石碇區', '坪林區', '三芝區', '石門區', '八里區', '平溪區', '雙溪區', '貢寮區', '金山區', '萬里區', '烏來區'],
         '臺北市': ['松山區', '信義區', '大安區', '中山區', '中正區', '大同區', '萬華區', '文山區', '南港區', '內湖區', '士林區', '北投區'],
@@ -199,5 +201,5 @@ def get_weather(place):
 if __name__ == '__main__':
     # print(get_weather_city('台北'))
     # print(get_weather_dict('新北市', '瑞芳區'))
-    place = '台北'
-    print(get_weather(place))
+    place = ''
+    print(format_location(place))

@@ -58,6 +58,7 @@ def linebot():
                     reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
                     reply = '天氣資訊'
                     line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
+                    return 'OK'
                 else:
                     reply = '無法查詢\n請重新輸入 "天氣" + "地區"'
             else:
@@ -66,6 +67,7 @@ def linebot():
             reply = '你傳的不是文字呦～'
 
         user_history(userId, 'assistant', reply)
+        # print('\n', reply, '\n')
         line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
 
     except Exception as e:                                      # 如果發生錯誤，印出收到的內容
