@@ -66,7 +66,7 @@ def linebot():
                         reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
                 elif msg[:3] == 'GPT' or msg[:3] == 'gpt':      # 判斷是否為 GPT 指令
                     msg = msg[3:]
-                    reply = linebot_GPT.chat_input(msg)
+                    reply = linebot_GPT.chat_input(userId, msg)
                     user_history(userId, 'user', msg, 'GPT')
                     user_history(userId, 'assistant', reply, 'GPT')
                     return 'OK'
