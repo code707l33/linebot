@@ -34,9 +34,9 @@ def chat_input(user_id, new_text):
     # 呼叫 OpenAI API 並取得回覆
     completion = client.chat.completions.create(
         # model="gpt-3.5-turbo",
-        # model="embedding"
-        model="gpt-4o-mini"
-        # model="gpt-4"
+        # model="embedding",
+        model="gpt-4o-mini",
+        # model="gpt-4",
         messages=messages
     )
     # 取得 GPT-3.5 的回覆
