@@ -51,16 +51,21 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
             user_history(userId, 'user', msg)
 
-            if '天氣' in msg:
+            if msg[:2] == '!天氣':
+                msg = msg[2:]
                 reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
 
                 if reply is not None:
                     reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
-                    reply = '天氣資訊'
                     line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
+                    reply = '!天氣資訊'
+                    user_history(userId, 'assistant', reply)
                     return 'OK'
                 else:
-                    reply = '無法查詢\n請重新輸入 "天氣" + "地區"'
+                    reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
+
+            elif msg == '!gpt' or msg == '!GPT':
+                reply = 'GPT 功能尚未開放，請使用其他功能。'
             else:
                 reply = msg
         else:
@@ -114,8 +119,8 @@ def serve_image(filename):
     return send_from_directory('static/images', filename)
 
 
-def user_history(user_id, caracters, text):
-    log_msg = {caracters: text}
+def user_history(user_id, role, content, text_type=''):
+    log_msg = {'role': role, 'content': content, 'text_type': text_type}
     file_path = os.path.join('history_msg', f'{user_id}.json')
 
     try:
