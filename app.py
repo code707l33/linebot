@@ -87,7 +87,7 @@ def boardcast():
             if msg_type == "text":
                 line_bot_api.broadcast(TextSendMessage(text=msg))
             elif msg_type == "flex":
-                line_bot_api.broadcast(FlexSendMessage(alt_text=msg["altText"], contents=msg))
+                line_bot_api.broadcast(FlexSendMessage(alt_text="廣播", contents=msg))
         return '200 Broadcast successful', 200  # 成功回應
 
     except Exception as e:
