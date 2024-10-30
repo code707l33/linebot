@@ -68,6 +68,29 @@ def linebot():
     return 'OK'                                              # 驗證 Webhook 使用，不能省略
 
 
+@app.route('/broadcast', methods=['POST'])
+def boardcast():
+    line_bot_api = LineBotApi(access_token)
+    handler = WebhookHandler(secret)
+
+    body = request.get_data(as_text=True)
+    try:
+        json_data = json.loads(body)
+
+        user = json_data.get("user")  # 取得使用者名稱（此處未使用）
+        msg = json_data.get("message")
+
+        line_bot_api.broadcast(TextSendMessage(text=msg))
+        return 'Broadcast successful', 200  # 成功回應
+
+    except Exception as e:
+        print("錯誤類型:", type(e).__name__)
+        print("錯誤訊息:", e)
+        print("錯誤行數:")
+        traceback.print_exc()
+        return f'Error: {e}', 500  # 回應錯誤訊息和狀態碼
+
+
 @app.route('/img/<filename>')
 def serve_image(filename):
     # 指定圖片的文件夾路徑，並返回圖片文件
