@@ -14,14 +14,17 @@ import weatherAPI
 # 引入 traceback
 import traceback
 
+# 引入 dotenv
+from dotenv import load_dotenv, dotenv_values
+
 app = Flask(__name__)
 
 
 with open('secret.json') as fp:
     secret_data = json.load(fp)
 
-access_token = secret_data['access_token']
-secret = secret_data['secret']
+access_token = dotenv_values('.env')["linebot_access_token"]
+secret = dotenv_values('.env')["linebot_secret"]
 
 
 @app.route("/", methods=['GET'])
