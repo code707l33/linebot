@@ -3,6 +3,9 @@ from flask import Flask, request, send_from_directory
 # 載入 json 標準函式庫，處理回傳的資料格式
 import json
 
+# 引入 os 模組
+import os
+
 # 載入 LINE Message API 相關函式庫
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -42,23 +45,28 @@ def linebot():
         handler.handle(body, signature)                      # 綁定訊息回傳的相關資訊
         tk = json_data['events'][0]['replyToken']            # 取得回傳訊息的 Token
 
+        userId = json_data['events'][0]['source']['userId']  # 取得使用者 ID
         type = json_data['events'][0]['message']['type']     # 取得 LINe 收到的訊息類型
         if type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
+            user_history(userId, 'user', msg)
 
             if '天氣' in msg:
                 reply = weatherAPI.get_weather(msg)     # 呼叫 get_weather_city 函式
 
-                if reply is None:
-                    line_bot_api.reply_message(tk, TextSendMessage('無法查詢\n請重新輸入 "天氣" + "地區"'))
-                else:
+                if reply is not None:
                     reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
-                    # line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
+                    user_history(userId, 'assistant', '天氣資訊')
                     line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
+                else:
+                    reply = '無法查詢\n請重新輸入 "天氣" + "地區"'
             else:
-                line_bot_api.reply_message(tk, TextSendMessage(msg))  # 回傳訊息
+                reply = msg
         else:
-            line_bot_api.reply_message(tk, TextSendMessage('你傳的不是文字呦～'))  # 回傳訊息
+            reply = '你傳的不是文字呦～'
+
+        user_history(userId, 'assistant', reply)
+        line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
 
     except Exception as e:                                      # 如果發生錯誤，印出收到的內容
         print("錯誤類型:", type(e).__name__)
@@ -102,6 +110,30 @@ def boardcast():
 def serve_image(filename):
     # 指定圖片的文件夾路徑，並返回圖片文件
     return send_from_directory('static/images', filename)
+
+
+def user_history(user_id, caracters, text):
+    log_msg = {caracters: text}
+    file_path = os.path.join('history_msg', f'{user_id}.json')
+
+    try:
+        if os.path.isfile(file_path):
+            # 如果檔案已存在，讀取當前內容並添加新的訊息
+            with open(file_path, 'r', encoding='utf-8') as f:
+                history = json.load(f)
+        else:
+            # 如果檔案不存在，初始化為空陣列
+            history = []
+
+        # 添加新的訊息到歷史紀錄
+        history.append(log_msg)
+
+        # 將更新後的歷史紀錄寫回檔案
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(history, f, ensure_ascii=False, indent=4)
+
+    except Exception as e:
+        print(f'寫入檔案時發生錯誤: {e}')
 
 
 if __name__ == "__main__":
