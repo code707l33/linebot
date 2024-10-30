@@ -20,6 +20,9 @@ def chat_input(user_id, new_text):
         {key: value for key, value in entry.items() if key != 'content_type'}
         for entry in history if entry['content_type'] == 'GPT']
 
+    if len(messages) == 0:  # 如果沒有任何消息
+        messages = [{"role": "system", "content": "你是一個聊天機器人，使用繁體中文回應"}]
+
     # 將用戶的輸入轉成字典格式
     user_msg = {"role": "user", "content": new_text}
     messages.append(user_msg)

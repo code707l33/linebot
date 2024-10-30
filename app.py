@@ -69,7 +69,7 @@ def linebot():
                     reply = linebot_GPT.chat_input(userId, msg)
                     user_history(userId, 'user', msg, 'GPT')
                     user_history(userId, 'assistant', reply, 'GPT')
-                    return 'OK'
+                    # return 'OK'
 
                 else:                                          # 無效指令
                     reply = '!指令錯誤'
