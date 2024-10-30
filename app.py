@@ -7,9 +7,12 @@ import json
 import os
 
 # 載入 LINE Message API 相關函式庫
-from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError
+# from linebot import LineBotApi
+# from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
+
+from linebot.v3.webhook import WebhookHandler
+from linebot.v3.messaging import MessagingApi
 
 # 引入 Weather API 天氣查詢
 import weatherAPI
@@ -38,7 +41,7 @@ def linebot():
     try:
         json_data = json.loads(body)                         # json 格式化訊息內容
         # print('\n', json_data, '\n')
-        line_bot_api = LineBotApi(access_token)              # 確認 token 是否正確
+        line_bot_api = MessagingApi(access_token=access_token)  # 確認 token 是否正確
         handler = WebhookHandler(secret)                     # 確認 secret 是否正確
         signature = request.headers['X-Line-Signature']      # 加入回傳的 headers
 
