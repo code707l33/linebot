@@ -17,8 +17,8 @@ def chat_input(user_id, new_text):
         history = json.load(f)
 
     messages = [
-        {key: value for key, value in entry.items() if key != 'text_type'}
-        for entry in history if entry['text_type'] == 'GPT']
+        {key: value for key, value in entry.items() if key != 'content_type'}
+        for entry in history if entry['content_type'] == 'GPT']
 
     # 將用戶的輸入轉成字典格式
     user_msg = {"role": "user", "content": new_text}
