@@ -5,6 +5,7 @@ import json
 
 # 引入 os traceback 模組
 import os
+from pathlib import Path
 import traceback
 
 # 引入 dotenv
@@ -52,13 +53,14 @@ def linebot():
 
             # 判斷GPT HISTORY 是否存在，存在則調用GPT API 回復
             file_path = os.path.join('history_msg', f'{userId}.json')
+            file_path = Path(file_path)
 
             if msg[0] == '!' or msg[0] == '！':                # 判斷是否為指令
                 msg = msg[1:]
 
                 if msg == 'GPT' or msg == 'gpt':      # 判斷是否為 GPT 指令
                     print(file_path)
-                    if os.path.isfile(file_path):
+                    if Path.exists(file_path):
                         reply = '-----關閉 GPT 模式-----'
                         os.remove(file_path)
 
@@ -85,7 +87,7 @@ def linebot():
 
             else:
 
-                if os.path.isfile(file_path):                 # 判斷是處於GPT 模式
+                if Path.exists(file_path):                 # 判斷是處於GPT 模式
                     reply = linebot_GPT.chat_input(userId, msg)
                     user_history(userId, 'user', msg, 'GPT')
                     user_history(userId, 'assistant', reply, 'GPT')
