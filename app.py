@@ -50,12 +50,26 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
             user_history(userId, 'user', msg)
 
+            # 判斷GPT HISTORY 是否存在，存在則調用GPT API 回復
+            file_path = os.path.join('history_msg', f'{userId}.json')
+
             if msg[0] == '!' or msg[0] == '！':                # 判斷是否為指令
                 msg = msg[1:]
 
-                if '天氣' in msg:                             # 判斷是否為天氣指令
-                    reply = weatherAPI.get_weather(msg)       # 呼叫 get_weather_city 函式
+                if msg == 'GPT' or msg == 'gpt':      # 判斷是否為 GPT 指令
+                    if os.path.isfile(file_path):
+                        reply = '-----關閉 GPT 模式-----'
+                        os.remove(file_path)
 
+                    else:
+                        reply = '-----開啟 GPT 模式-----'
+                        with open(file_path, 'w', encoding='utf-8') as f:
+                            f.write('{"role": "system", "content": "你是一個聊天機器人，使用繁體中文回應"}')
+
+                    # return 'OK'
+
+                elif '天氣' in msg:                             # 判斷是否為天氣指令
+                    reply = weatherAPI.get_weather(msg)       # 呼叫 get_weather_city 函式
                     if reply is not None:
                         reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
                         line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
@@ -64,22 +78,23 @@ def linebot():
                         return 'OK'
                     else:
                         reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
-                elif msg[:3] == 'GPT' or msg[:3] == 'gpt':      # 判斷是否為 GPT 指令
-                    msg = msg[3:]
-                    reply = linebot_GPT.chat_input(userId, msg)
-                    user_history(userId, 'user', msg, 'GPT')
-                    user_history(userId, 'assistant', reply, 'GPT')
-                    # return 'OK'
 
                 else:                                          # 無效指令
                     reply = '!指令錯誤'
 
             else:
-                reply = msg
+
+                if os.path.isfile(file_path):                 # 判斷是處於GPT 模式
+                    reply = linebot_GPT.chat_input(userId, msg)
+                    user_history(userId, 'user', msg, 'GPT')
+                    user_history(userId, 'assistant', reply, 'GPT')
+                    return 'OK'
+                else:
+                    reply = msg
         else:
             reply = '你傳的不是文字呦～'
 
-        user_history(userId, 'assistant', reply)
+        # user_history(userId, 'assistant', reply)
         # print('\n', reply, '\n')
         line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
 
