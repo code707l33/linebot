@@ -49,7 +49,6 @@ def linebot():
         type = json_data['events'][0]['message']['type']     # 取得 LINe 收到的訊息類型
         if type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
-            user_history(userId, 'user', msg)
 
             # 判斷GPT HISTORY 是否存在，存在則調用GPT API 回復
             file_path = os.path.join('history_msg', f'{userId}.json')
@@ -60,7 +59,7 @@ def linebot():
 
                 if msg == 'GPT' or msg == 'gpt':      # 判斷是否為 GPT 指令
 
-                    print('\n\n', file_path, '\n\n')
+                    # print('\n\n', file_path, '\n\n')
 
                     if Path.exists(file_path):
                         reply = '-----關閉 GPT 模式-----'
