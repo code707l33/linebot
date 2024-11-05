@@ -1,32 +1,6 @@
 [
     {
-        "role": "user",
-        "content": "天氣",
-        "content_type": "GPT"
-    },
-    {
-        "role": "assistant",
-        "content": "天氣",
-        "content_type": "GPT"
-    },
-    {
-        "role": "user",
-        "content": "哈嘍",
-        "content_type": ""
-    },
-    {
-        "role": "assistant",
-        "content": "哈嘍",
-        "content_type": ""
-    },
-    {
-        "role": "user",
-        "content": "樹林天氣",
-        "content_type": "GPT"
-    },
-    {
-        "role": "assistant",
-        "content": "樹林天氣",
-        "content_type": "GPT"
+        "role": "system",
+        "content": "你是一個聊天機器人，請用繁體中文回答"
     }
 ]
