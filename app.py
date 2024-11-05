@@ -149,11 +149,9 @@ def command_handler(user_id, msg, file_path):
     elif '天氣' in msg:                             # 判斷是否為天氣指令
         reply = weatherAPI.get_weather(msg)
         if reply is not None:
-
-            print('\n\n', type(FlexSendMessage(reply)), '\n\n')
-            return FlexSendMessage(reply)
+            place = msg.replace('天氣', '').replace(' ', '')
+            return FlexSendMessage(alt_text=f'{place}天氣資訊', contents=reply)
         else:
-            print('\n\n', type(TextSendMessage('無法查詢\n請重新輸入 "!天氣" + "地區"')), '\n\n')
             return TextSendMessage('無法查詢\n請重新輸入 "!天氣" + "地區"')
     else:
         return TextSendMessage('!指令錯誤')
