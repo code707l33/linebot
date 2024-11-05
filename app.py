@@ -150,7 +150,7 @@ def command_handler(user_id, msg, file_path):
         reply = weatherAPI.get_weather(msg)
         if reply is not None:
             place = msg.replace('天氣', '').replace(' ', '')
-            return FlexSendMessage(alt_text=f'{place}天氣資訊', contents=reply)
+            return FlexSendMessage(alt_text='天氣資訊', contents=reply)
         else:
             return TextSendMessage('無法查詢\n請重新輸入 "!天氣" + "地區"')
     else:
