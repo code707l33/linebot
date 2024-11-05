@@ -59,7 +59,9 @@ def linebot():
                 msg = msg[1:]
 
                 if msg == 'GPT' or msg == 'gpt':      # 判斷是否為 GPT 指令
-                    print(file_path)
+
+                    print('\n\n', file_path, '\n\n')
+
                     if Path.exists(file_path):
                         reply = '-----關閉 GPT 模式-----'
                         os.remove(file_path)
