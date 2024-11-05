@@ -68,7 +68,8 @@ def linebot():
                     else:
                         reply = '-----開啟 GPT 模式-----'
                         with open(file_path, 'w', encoding='utf-8') as f:
-                            f.write('{"role": "system", "content": "你是一個聊天機器人，使用繁體中文回應"}')
+                            init_gptMSG = [{"role": "system", "content": "你是一個聊天機器人，請用繁體中文回答"}]
+                            json.dump(init_gptMSG, f, ensure_ascii=False, indent=4)
 
                     # return 'OK'
 
