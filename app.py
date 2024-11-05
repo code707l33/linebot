@@ -45,63 +45,25 @@ def linebot():
         handler.handle(body, signature)                      # 綁定訊息回傳的相關資訊
         tk = json_data['events'][0]['replyToken']            # 取得回傳訊息的 Token
 
-        userId = json_data['events'][0]['source']['userId']  # 取得使用者 ID
-        type = json_data['events'][0]['message']['type']     # 取得 LINe 收到的訊息類型
-        if type == 'text':
+        user_id = json_data['events'][0]['source']['userId']  # 取得使用者 ID
+        msg_type = json_data['events'][0]['message']['type']     # 取得 LINe 收到的訊息類型
+
+        if msg_type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
 
             # 判斷GPT HISTORY 是否存在，存在則調用GPT API 回復
-            file_path = os.path.join('history_msg', f'{userId}.json')
-            file_path = Path(file_path)
+            file_path = Path.joinpath('history_msg', f'{user_id}.json')
 
-            if msg[0] == '!' or msg[0] == '！':                # 判斷是否為指令
-                msg = msg[1:]
-
-                if msg == 'GPT' or msg == 'gpt':      # 判斷是否為 GPT 指令
-
-                    # print('\n\n', file_path, '\n\n')
-
-                    if Path.exists(file_path):
-                        reply = '-----關閉 GPT 模式-----'
-                        os.remove(file_path)
-
-                    else:
-                        reply = '-----開啟 GPT 模式-----'
-                        with open(file_path, 'w', encoding='utf-8') as f:
-                            init_gptMSG = [{"role": "system", "content": "你是一個聊天機器人，請用繁體中文回答"}]
-                            json.dump(init_gptMSG, f, ensure_ascii=False, indent=4)
-
-                    # return 'OK'
-
-                elif '天氣' in msg:                             # 判斷是否為天氣指令
-                    reply = weatherAPI.get_weather(msg)       # 呼叫 get_weather_city 函式
-                    if reply is not None:
-                        reply_json = FlexSendMessage(alt_text='天氣', contents=reply)
-                        line_bot_api.reply_message(tk, reply_json)  # 回傳訊息
-                        reply = '!天氣資訊'
-                        user_history(userId, 'assistant', reply)
-                        return 'OK'
-                    else:
-                        reply = '無法查詢\n請重新輸入 "!天氣" + "地區"'
-
-                else:                                          # 無效指令
-                    reply = '!指令錯誤'
-
+            if msg.startswith(('!', '！')):              # 判斷是否為指令
+                reply = command_handler(user_id, msg, file_path)
             else:
-
-                if Path.exists(file_path):                 # 判斷是處於GPT 模式
-                    reply = linebot_GPT.chat_input(userId, msg)
-                    user_history(userId, 'user', msg, 'GPT')
-                    user_history(userId, 'assistant', reply, 'GPT')
-                    # return 'OK'
-                else:
-                    reply = msg
+                reply = message_handler(user_id, msg, file_path)
         else:
-            reply = '你傳的不是文字呦～'
+            reply = TextSendMessage('你傳的不是文字呦～')
 
         # user_history(userId, 'assistant', reply)
         # print('\n', reply, '\n')
-        line_bot_api.reply_message(tk, TextSendMessage(reply))  # 回傳訊息
+        line_bot_api.reply_message(tk, reply)  # 回傳訊息
 
     except Exception as e:                                      # 如果發生錯誤，印出收到的內容
         print("錯誤類型:", type(e).__name__)
@@ -169,6 +131,42 @@ def user_history(user_id, role, content, content_type=''):
 
     except Exception as e:
         print(f'寫入檔案時發生錯誤: {e}')
+
+
+def command_handler(msg, file_path):
+
+    if msg.lower() == 'gpt':                             # 判斷是否為 GPT 指令
+        if Path.exists(file_path):
+            os.remove(file_path)
+            return '-----關閉 GPT 模式-----'
+        else:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                init_gptMSG = [{"role": "system", "content": "你是一個聊天機器人，請用繁體中文回答"}]
+                json.dump(init_gptMSG, f, ensure_ascii=False, indent=4)
+            return '-----開啟 GPT 模式-----'
+
+    elif '天氣' in msg:                             # 判斷是否為天氣指令
+        reply = weatherAPI.get_weather(msg)
+        if reply is not None:
+
+            print('\n\n', type(FlexSendMessage(reply)), '\n\n')
+            return FlexSendMessage(reply)
+        else:
+            print('\n\n', type(TextSendMessage('無法查詢\n請重新輸入 "!天氣" + "地區"')), '\n\n')
+            return TextSendMessage('無法查詢\n請重新輸入 "!天氣" + "地區"')
+    else:
+        return TextSendMessage('!指令錯誤')
+
+
+def message_handler(user_id, msg, file_path):
+
+    if Path.exists(file_path):                        # 判斷是處於GPT 模式
+        reply = linebot_GPT.chat_input(user_id, msg)
+        user_history(user_id, 'user', msg)
+        user_history(user_id, 'assistant', reply)
+    else:
+        reply = msg
+    return TextSendMessage(reply)
 
 
 if __name__ == "__main__":
