@@ -139,12 +139,12 @@ def command_handler(user_id, msg, file_path):
     if msg.lower() == 'gpt':                             # 判斷是否為 GPT 指令
         if Path.exists(file_path):
             os.remove(file_path)
-            return '-----關閉 GPT 模式-----'
+            return (TextSendMessage'-----關閉 GPT 模式-----')
         else:
             with open(file_path, 'w', encoding='utf-8') as f:
                 init_gptMSG = [{"role": "system", "content": "你是一個聊天機器人，請用繁體中文回答"}]
                 json.dump(init_gptMSG, f, ensure_ascii=False, indent=4)
-            return '-----開啟 GPT 模式-----'
+            return TextSendMessage('-----開啟 GPT 模式-----')
 
     elif '天氣' in msg:                             # 判斷是否為天氣指令
         reply = weatherAPI.get_weather(msg)
