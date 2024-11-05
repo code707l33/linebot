@@ -52,7 +52,8 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
 
             # 判斷GPT HISTORY 是否存在，存在則調用GPT API 回復
-            file_path = Path.joinpath('history_msg', f'{user_id}.json')
+            file_path = os.path.join('history_msg', f'{userId}.json')
+            file_path = Path(file_path)
 
             if msg.startswith(('!', '！')):              # 判斷是否為指令
                 reply = command_handler(user_id, msg, file_path)
