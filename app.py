@@ -134,7 +134,7 @@ def user_history(user_id, role, content, content_type=''):
         print(f'寫入檔案時發生錯誤: {e}')
 
 
-def command_handler(msg, file_path):
+def command_handler(user_id, msg, file_path):
 
     if msg.lower() == 'gpt':                             # 判斷是否為 GPT 指令
         if Path.exists(file_path):
