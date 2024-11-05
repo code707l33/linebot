@@ -199,7 +199,5 @@ def get_weather(place):
 
 
 if __name__ == '__main__':
-    # print(get_weather_city('台北'))
-    # print(get_weather_dict('新北市', '瑞芳區'))
-    place = ''
-    print(format_location(place))
+
+    print(type(get_weather('台北市')))

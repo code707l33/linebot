@@ -56,7 +56,7 @@ def linebot():
             file_path = Path(file_path)
 
             if msg.startswith(('!', '！')):              # 判斷是否為指令
-                reply = command_handler(user_id, msg, file_path)
+                reply = command_handler(user_id, msg[1:], file_path)
             else:
                 reply = message_handler(user_id, msg, file_path)
         else:
